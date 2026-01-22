@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Ferreira - Web Design Premium</title>
+    <meta name="description" content="Transforme sua presença digital com sites de alta performance.">
+    
+    <!-- Google Fonts: Outfit (Títulos) e Inter (Corpo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP para Animações dos Cards -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
+    <!-- Configuração Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        dark: {
+                            950: '#020617', 
+                            900: '#0f172a', 
+                            800: '#1e293b', 
+                            700: '#334155', 
+                            400: '#94a3b8', 
+                            200: '#e2e8f0', 
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    },
+                    screens: {
+                        'xs': '475px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* CSS do Dark Veil Canvas */
+        #darkveil-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        /* Classes para animação de entrada (Scroll Reveal) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Ajuste fino para o toggle */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #4f46e5;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #4f46e5;
+        }
+
+        /* Glassmorphism forte para o menu mobile */
+        .glass-menu {
+            background: rgba(2, 6, 23, 0.95); /* Mais escuro para legibilidade no mobile */
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+
+        /* Botão Flutuante do WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 24px; /* Levemente menor no mobile */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .whatsapp-float {
+                bottom: 30px;
+                right: 30px;
+                font-size: 30px;
+            }
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1) translateY(-5px);
+            background-color: #20ba5a;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+        }
+
+        /* --- MAGIC BENTO CARD EFFECTS --- */
+        .magic-card {
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .magic-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(
+                800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                rgba(255, 255, 255, 0.06), 
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* No mobile, removemos o efeito de hover/spotlight para performance */
+        @media (hover: hover) {
+            .magic-card:hover::before { opacity: 1; }
+            .magic-card:hover::after { opacity: 1; }
+        }
+
+        /* Border Glow Effect */
+        .magic-card::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: radial-gradient(
+                400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                rgba(99, 102, 241, 0.4), 
+                transparent 40%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(132, 0, 255, 0.8);
+            box-shadow: 0 0 6px rgba(132, 0, 255, 0.6);
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="font-sans text-dark-200 bg-dark-950 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- EFEITO DE FUNDO: DARK VEIL SHADER -->
+    <canvas id="darkveil-canvas"></canvas>
+
+    <!-- Botão Flutuante WhatsApp -->
+    <a href="https://wa.me/5579988225837" target="_blank" class="whatsapp-float p-3 flex items-center justify-center group" aria-label="Falar no WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" class="md:w-8 md:h-8">
+            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+        </svg>
+        <span class="absolute right-full mr-4 bg-dark-900 text-white border border-dark-700 text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg hidden md:block">Fale Conosco</span>
+    </a>
+
+    <!-- Navbar Flutuante Centralizada -->
+    <div class="fixed top-4 left-0 w-full z-50 flex justify-center px-2 md:px-4">
+        <!-- bg-dark-900/50 para mais transparência -->
+        <nav class="w-full max-w-5xl bg-dark-900/50 backdrop-blur-xl border border-dark-700/30 rounded-full transition-all duration-300 shadow-2xl" id="navbar">
+            <div class="px-4 md:px-8">
+                <div id="navbar-container" class="grid grid-cols-2 md:grid-cols-3 items-center h-16 md:h-20 transition-all duration-300 ease-in-out">
+                    <!-- Logo -->
+                    <div class="flex items-center justify-start cursor-pointer group" onclick="scrollToSection('hero')">
+                        <span class="font-display font-bold text-xl md:text-2xl text-white group-hover:opacity-80 transition-opacity">Ferreira <span class="text-brand-500">Web</span></span>
+                    </div>
+                    <!-- Menu Desktop -->
+                    <div class="hidden md:flex justify-center space-x-8 items-center font-medium text-sm">
+                        <button onclick="scrollToSection('features')" class="text-dark-400 hover:text-white hover:text-brand-400 transition-colors">Vantagens</button>
+                        <button onclick="scrollToSection('portfolio')" class="text-dark-400 hover:text-white hover:text-brand-400 transition-colors">Portfólio</button>
+                        <button onclick="scrollToSection('process')" class="text-dark-400 hover:text-white hover:text-brand-400 transition-colors">Processo</button>
+                        <button onclick="scrollToSection('pricing')" class="text-dark-400 hover:text-white hover:text-brand-400 transition-colors">Planos</button>
+                    </div>
+                    <!-- Botão CTA -->
+                    <div class="hidden md:flex justify-end">
+                        <button onclick="openWhatsApp()" class="bg-brand-600 text-white px-5 py-2 rounded-full hover:bg-brand-500 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-brand-900/50 hover:shadow-brand-600/50 flex items-center gap-2 border border-brand-500/20 text-sm font-bold">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+                        </button>
+                    </div>
+                    <!-- Menu Mobile Button -->
+                    <div class="md:hidden flex justify-end">
+                        <button onclick="toggleMenu()" class="text-dark-200 p-2 hover:bg-dark-800 rounded-full transition-colors">
+                            <i data-lucide="menu" id="menu-icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-24 left-4 right-4 z-40 glass-menu rounded-2xl shadow-2xl transform origin-top transition-all duration-300 border border-dark-700">
+        <div class="p-4 space-y-2">
+            <button onclick="scrollToSection('features')" class="block w-full text-left px-4 py-3 text-dark-200 hover:bg-dark-800 hover:text-brand-400 rounded-xl font-medium transition-colors">Vantagens</button>
+            <button onclick="scrollToSection('portfolio')" class="block w-full text-left px-4 py-3 text-dark-200 hover:bg-dark-800 hover:text-brand-400 rounded-xl font-medium transition-colors">Portfólio</button>
+            <button onclick="scrollToSection('process')" class="block w-full text-left px-4 py-3 text-dark-200 hover:bg-dark-800 hover:text-brand-400 rounded-xl font-medium transition-colors">Processo</button>
+            <button onclick="scrollToSection('pricing')" class="block w-full text-left px-4 py-3 text-dark-200 hover:bg-dark-800 hover:text-brand-400 rounded-xl font-medium transition-colors">Planos</button>
+            <button onclick="openWhatsApp()" class="block w-full text-left px-4 py-3 text-white bg-[#25d366] hover:bg-[#20ba5a] rounded-xl font-bold shadow-md text-center flex items-center justify-center gap-2 mt-4">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Falar no WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative pt-32 pb-16 md:pt-40 md:pb-20 lg:pt-56 lg:pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center max-w-4xl mx-auto relative z-10">
+                <div class="reveal active inline-flex items-center gap-2 mb-6 md:mb-8 px-4 py-2 rounded-full bg-dark-900/50 backdrop-blur-sm border border-dark-700 text-brand-400 font-semibold text-xs uppercase tracking-wider shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    Transformação Digital
+                </div>
+                
+                <h1 class="reveal font-display text-4xl sm:text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 md:mb-8 leading-[1.1] drop-shadow-2xl">
+                    Crie um Site que <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-indigo-400 to-purple-400">Vende Por Você</span>
+                </h1>
+                
+                <p class="reveal text-lg md:text-xl text-dark-400 mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed px-2">
+                    Não tenha apenas um site. Tenha uma máquina de vendas de alta performance, focada em design, experiência do usuário e conversão.
+                </p>
+                
+                <div class="reveal flex flex-col sm:flex-row justify-center gap-4 px-4">
+                    <button onclick="scrollToSection('pricing')" class="group bg-brand-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-brand-500 transition-all shadow-xl shadow-brand-900/40 flex items-center justify-center gap-2 hover:-translate-y-1 border border-brand-500/20 w-full sm:w-auto">
+                        Ver Planos 
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <button onclick="openWhatsApp()" class="bg-dark-900/80 backdrop-blur-sm text-white border border-dark-700 px-8 py-4 rounded-full text-lg font-bold hover:bg-dark-800 hover:border-dark-600 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                        <i data-lucide="message-circle" class="w-5 h-5 text-brand-400"></i> Falar no WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section (Com Efeito Magic Bento) -->
+    <section id="features" class="py-16 md:py-24 relative border-t border-dark-800/50 bg-dark-950/20 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16 reveal">
+                <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Diferenciais</span>
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Por que escolher a Ferreira Web?</h2>
+                <p class="text-base md:text-lg text-dark-400 max-w-2xl mx-auto">Excelência técnica e visual para destacar sua marca no mercado digital.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <!-- Card 1 -->
+                <div class="reveal magic-card p-8 bg-dark-900/80 rounded-2xl border border-dark-800 shadow-lg shadow-black/20 group backdrop-blur-sm">
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-dark-800 rounded-xl flex items-center justify-center shadow-inner mb-6 group-hover:scale-110 transition-transform duration-300 text-brand-400">
+                            <i data-lucide="monitor" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-3">100% Responsivo</h3>
+                        <p class="text-dark-400 leading-relaxed text-sm">Layout fluido que se adapta perfeitamente a qualquer tela: celular, tablet ou desktop.</p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="reveal magic-card p-8 bg-dark-900/80 rounded-2xl border border-dark-800 shadow-lg shadow-black/20 group backdrop-blur-sm" style="transition-delay: 100ms;">
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-dark-800 rounded-xl flex items-center justify-center shadow-inner mb-6 group-hover:scale-110 transition-transform duration-300 text-amber-400">
+                            <i data-lucide="zap" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-3">Ultra Rápido</h3>
+                        <p class="text-dark-400 leading-relaxed text-sm">Otimização máxima de código e imagens para carregamento instantâneo. Google PageSpeed otimizado.</p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="reveal magic-card p-8 bg-dark-900/80 rounded-2xl border border-dark-800 shadow-lg shadow-black/20 group backdrop-blur-sm" style="transition-delay: 200ms;">
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-dark-800 rounded-xl flex items-center justify-center shadow-inner mb-6 group-hover:scale-110 transition-transform duration-300 text-emerald-400">
+                            <i data-lucide="search" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-3">SEO Friendly</h3>
+                        <p class="text-dark-400 leading-relaxed text-sm">Estrutura semântica pronta para indexação do Google, Bing e outros buscadores.</p>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="reveal magic-card p-8 bg-dark-900/80 rounded-2xl border border-dark-800 shadow-lg shadow-black/20 group backdrop-blur-sm" style="transition-delay: 300ms;">
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-dark-800 rounded-xl flex items-center justify-center shadow-inner mb-6 group-hover:scale-110 transition-transform duration-300 text-rose-400">
+                            <i data-lucide="shield-check" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-white mb-3">Segurança Total</h3>
+                        <p class="text-dark-400 leading-relaxed text-sm">Proteção contra ataques e Certificado SSL (cadeado verde) incluso em todos os planos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section (Com Efeito Magic Bento) -->
+    <section id="portfolio" class="py-16 md:py-24 bg-dark-950/30 border-t border-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16 reveal">
+                <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Portfólio</span>
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Projetos que Inspiram</h2>
+                <p class="text-base md:text-lg text-dark-400 max-w-2xl mx-auto">Confira alguns estilos de projetos que podemos desenvolver para o seu negócio.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Project 1 -->
+                <div class="reveal magic-card group relative bg-dark-800 rounded-2xl overflow-hidden shadow-lg border border-dark-700">
+                    <div class="relative z-10">
+                        <div class="h-64 bg-gradient-to-br from-dark-800 to-dark-700 flex items-center justify-center overflow-hidden relative">
+                            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                            <div class="w-3/4 h-3/4 bg-dark-900 rounded-lg shadow-2xl flex flex-col overflow-hidden transform group-hover:scale-105 transition-transform duration-500 border border-dark-700">
+                                <div class="h-6 bg-dark-800 border-b border-dark-700 flex items-center px-2 space-x-1">
+                                    <div class="w-2 h-2 rounded-full bg-red-500/50"></div><div class="w-2 h-2 rounded-full bg-yellow-500/50"></div><div class="w-2 h-2 rounded-full bg-green-500/50"></div>
+                                </div>
+                                <div class="flex-1 bg-dark-900 flex items-center justify-center">
+                                    <i data-lucide="shopping-bag" class="w-12 h-12 text-dark-400 group-hover:text-brand-400 transition-colors"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-brand-400 text-xs font-bold uppercase tracking-wider mb-2 block">E-commerce</span>
+                            <h3 class="text-xl font-bold text-white mb-2">Loja Virtual Moderna</h3>
+                            <p class="text-dark-400 text-sm">Design focado em conversão de vendas com checkout simplificado.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="reveal magic-card group relative bg-dark-800 rounded-2xl overflow-hidden shadow-lg border border-dark-700" style="transition-delay: 100ms;">
+                    <div class="relative z-10">
+                        <div class="h-64 bg-gradient-to-br from-dark-800 to-dark-700 flex items-center justify-center overflow-hidden relative">
+                            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                             <div class="w-3/4 h-3/4 bg-dark-900 rounded-lg shadow-2xl flex flex-col overflow-hidden transform group-hover:scale-105 transition-transform duration-500 border border-dark-700">
+                                <div class="h-6 bg-dark-800 border-b border-dark-700 flex items-center px-2 space-x-1">
+                                    <div class="w-2 h-2 rounded-full bg-red-500/50"></div><div class="w-2 h-2 rounded-full bg-yellow-500/50"></div><div class="w-2 h-2 rounded-full bg-green-500/50"></div>
+                                </div>
+                                <div class="flex-1 bg-dark-900 flex items-center justify-center">
+                                    <i data-lucide="building-2" class="w-12 h-12 text-dark-400 group-hover:text-indigo-400 transition-colors"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2 block">Institucional</span>
+                            <h3 class="text-xl font-bold text-white mb-2">Advocacia & Consultoria</h3>
+                            <p class="text-dark-400 text-sm">Site corporativo que transmite autoridade e profissionalismo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="reveal magic-card group relative bg-dark-800 rounded-2xl overflow-hidden shadow-lg border border-dark-700" style="transition-delay: 200ms;">
+                    <div class="relative z-10">
+                        <div class="h-64 bg-gradient-to-br from-dark-800 to-dark-700 flex items-center justify-center overflow-hidden relative">
+                            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                             <div class="w-3/4 h-3/4 bg-dark-900 rounded-lg shadow-2xl flex flex-col overflow-hidden transform group-hover:scale-105 transition-transform duration-500 border border-dark-700">
+                                <div class="h-6 bg-dark-800 border-b border-dark-700 flex items-center px-2 space-x-1">
+                                    <div class="w-2 h-2 rounded-full bg-red-500/50"></div><div class="w-2 h-2 rounded-full bg-yellow-500/50"></div><div class="w-2 h-2 rounded-full bg-green-500/50"></div>
+                                </div>
+                                <div class="flex-1 bg-dark-900 flex items-center justify-center">
+                                    <i data-lucide="utensils" class="w-12 h-12 text-dark-400 group-hover:text-emerald-400 transition-colors"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2 block">Delivery</span>
+                            <h3 class="text-xl font-bold text-white mb-2">Restaurante Digital</h3>
+                            <p class="text-dark-400 text-sm">Cardápio interativo com integração direta ao WhatsApp.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button onclick="openWhatsApp()" class="inline-flex items-center gap-2 text-brand-400 font-bold hover:text-brand-300 transition-colors">
+                    Ver mais projetos <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="py-16 md:py-24 bg-dark-950/30 text-white overflow-hidden border-t border-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div class="reveal">
+                    <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Metodologia Ágil</span>
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-6">Processo Transparente</h2>
+                    <p class="text-dark-400 text-base md:text-lg mb-10 leading-relaxed">
+                        Do primeiro café à entrega final, você acompanha tudo. Sem "caixas pretas", sem surpresas. Entregamos seu site pronto para vender.
+                    </p>
+                    
+                    <div class="space-y-0 relative pl-4 md:pl-0">
+                        <div class="absolute left-6 top-6 bottom-6 w-0.5 bg-dark-800 hidden md:block"></div>
+                        <!-- Steps adaptados para mobile -->
+                        <div class="relative flex flex-col md:flex-row gap-4 md:gap-6 pb-8 group">
+                            <div class="flex items-center gap-4 md:block">
+                                <div class="flex-shrink-0 w-12 h-12 bg-dark-900 border border-dark-700 rounded-full flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(99,102,241,0.2)] z-10 transition-all group-hover:border-brand-500/50 group-hover:text-brand-400">1</div>
+                                <h4 class="text-xl font-bold text-white group-hover:text-brand-400 transition-colors md:hidden">Briefing</h4>
+                            </div>
+                            <div><h4 class="text-xl font-bold mb-1 text-white group-hover:text-brand-400 transition-colors hidden md:block">Briefing</h4><p class="text-dark-400 text-sm">Entendemos seu mercado, público e objetivos.</p></div>
+                        </div>
+                        <div class="relative flex flex-col md:flex-row gap-4 md:gap-6 pb-8 group">
+                            <div class="flex items-center gap-4 md:block">
+                                <div class="flex-shrink-0 w-12 h-12 bg-dark-900 border border-dark-700 rounded-full flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(99,102,241,0.2)] z-10 transition-all group-hover:border-brand-500/50 group-hover:text-brand-400">2</div>
+                                <h4 class="text-xl font-bold text-white group-hover:text-brand-400 transition-colors md:hidden">Design & UX</h4>
+                            </div>
+                            <div><h4 class="text-xl font-bold mb-1 text-white group-hover:text-brand-400 transition-colors hidden md:block">Design & UX</h4><p class="text-dark-400 text-sm">Criação visual focada na experiência do usuário.</p></div>
+                        </div>
+                        <div class="relative flex flex-col md:flex-row gap-4 md:gap-6 pb-8 group">
+                            <div class="flex items-center gap-4 md:block">
+                                <div class="flex-shrink-0 w-12 h-12 bg-dark-900 border border-dark-700 rounded-full flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(99,102,241,0.2)] z-10 transition-all group-hover:border-brand-500/50 group-hover:text-brand-400">3</div>
+                                <h4 class="text-xl font-bold text-white group-hover:text-brand-400 transition-colors md:hidden">Desenvolvimento</h4>
+                            </div>
+                            <div><h4 class="text-xl font-bold mb-1 text-white group-hover:text-brand-400 transition-colors hidden md:block">Desenvolvimento</h4><p class="text-dark-400 text-sm">Codificação limpa e otimizada para performance.</p></div>
+                        </div>
+                        <div class="relative flex flex-col md:flex-row gap-4 md:gap-6 group">
+                            <div class="flex items-center gap-4 md:block">
+                                <div class="flex-shrink-0 w-12 h-12 bg-brand-600 rounded-full flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(99,102,241,0.6)] z-10 animate-pulse text-white">4</div>
+                                <h4 class="text-xl font-bold text-white group-hover:text-brand-400 transition-colors md:hidden">Lançamento</h4>
+                            </div>
+                            <div><h4 class="text-xl font-bold mb-1 text-white group-hover:text-brand-400 transition-colors hidden md:block">Lançamento</h4><p class="text-dark-400 text-sm">Testes finais, otimização e site no ar!</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative reveal delay-200 hidden lg:block">
+                    <div class="absolute inset-0 bg-brand-500 blur-[120px] opacity-10 rounded-full animate-pulse"></div>
+                    <div class="relative bg-dark-900/80 backdrop-blur-sm p-1 rounded-2xl border border-dark-700 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <div class="bg-dark-950 rounded-xl overflow-hidden border border-dark-800">
+                            <div class="bg-dark-900 px-4 py-3 flex items-center gap-2 border-b border-dark-800">
+                                <div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-red-500"></div><div class="w-3 h-3 rounded-full bg-amber-500"></div><div class="w-3 h-3 rounded-full bg-emerald-500"></div></div>
+                                <div class="ml-4 bg-dark-950 rounded-md px-3 py-1 text-xs text-dark-400 font-mono w-full border border-dark-800">ferreiraweb.com.br</div>
+                            </div>
+                            <div class="p-8 space-y-6">
+                                <div class="flex items-center justify-between"><div class="h-8 bg-dark-800 rounded w-32"></div><div class="flex gap-2"><div class="h-8 bg-dark-800 rounded w-16"></div><div class="h-8 bg-brand-600/50 rounded w-24"></div></div></div>
+                                <div class="h-px bg-dark-800 w-full"></div>
+                                <div class="flex gap-4"><div class="w-2/3 space-y-3"><div class="h-8 bg-dark-800 rounded w-3/4"></div><div class="h-24 bg-dark-800 rounded w-full border border-dark-700/50"></div></div><div class="w-1/3"><div class="h-32 bg-dark-800 rounded w-full"></div></div></div>
+                                <div class="grid grid-cols-3 gap-3"><div class="h-20 bg-dark-800 rounded border border-dark-700"></div><div class="h-20 bg-dark-800 rounded border border-dark-700"></div><div class="h-20 bg-dark-800 rounded border border-dark-700"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 md:py-24 bg-dark-950/30 border-t border-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16 reveal">
+                <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Depoimentos</span>
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">O que dizem nossos clientes</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- Depoimento 1 -->
+                <div class="reveal p-8 bg-dark-950 rounded-2xl border border-dark-800 shadow-lg">
+                    <div class="flex text-amber-400 mb-4"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
+                    <p class="text-dark-200 mb-6">"O site ficou incrível! Muito profissional e rápido. Minhas vendas no WhatsApp aumentaram consideravelmente depois do catálogo digital."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-900/50 border border-brand-800 rounded-full flex items-center justify-center font-bold text-brand-400">JP</div>
+                        <div><h4 class="font-bold text-white">João Paulo</h4><p class="text-xs text-dark-400">Lojista</p></div>
+                    </div>
+                </div>
+                <!-- Depoimento 2 -->
+                <div class="reveal p-8 bg-dark-950 rounded-2xl border border-dark-800 shadow-lg" style="transition-delay: 100ms;">
+                    <div class="flex text-amber-400 mb-4"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
+                    <p class="text-dark-200 mb-6">"Atendimento excelente. A equipe da Ferreira Web entendeu exatamente o que eu precisava para minha consultoria. Recomendo!"</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-900/50 border border-brand-800 rounded-full flex items-center justify-center font-bold text-brand-400">MC</div>
+                        <div><h4 class="font-bold text-white">Maria Clara</h4><p class="text-xs text-dark-400">Advogada</p></div>
+                    </div>
+                </div>
+                <!-- Depoimento 3 -->
+                <div class="reveal p-8 bg-dark-950 rounded-2xl border border-dark-800 shadow-lg" style="transition-delay: 200ms;">
+                    <div class="flex text-amber-400 mb-4"><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
+                    <p class="text-dark-200 mb-6">"Melhor investimento que fiz. O plano profissional vale cada centavo pelo suporte e funcionalidades."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-900/50 border border-brand-800 rounded-full flex items-center justify-center font-bold text-brand-400">RL</div>
+                        <div><h4 class="font-bold text-white">Ricardo Lima</h4><p class="text-xs text-dark-400">Empresário</p></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ Rápido -->
+            <div class="mt-16 md:mt-20 max-w-3xl mx-auto">
+                <h3 class="text-2xl font-bold text-center mb-8 text-white">Dúvidas Frequentes</h3>
+                <div class="space-y-4">
+                    <div class="bg-dark-950 rounded-lg border border-dark-800 p-4 hover:border-brand-500/50 transition-colors cursor-pointer" onclick="this.querySelector('p').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Quanto tempo demora para ficar pronto?</h4><i data-lucide="chevron-down" class="text-dark-400 transition-transform duration-300"></i></div>
+                        <p class="text-dark-400 mt-2 text-sm hidden">O prazo médio é de 5 a 10 dias úteis, dependendo do plano escolhido e da entrega do conteúdo (fotos/textos) por sua parte.</p>
+                    </div>
+                    <div class="bg-dark-950 rounded-lg border border-dark-800 p-4 hover:border-brand-500/50 transition-colors cursor-pointer" onclick="this.querySelector('p').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Preciso pagar hospedagem?</h4><i data-lucide="chevron-down" class="text-dark-400 transition-transform duration-300"></i></div>
+                        <p class="text-dark-400 mt-2 text-sm hidden">Não! A hospedagem já está inclusa em todos os nossos planos mensais, você não precisa se preocupar com servidores técnicos.</p>
+                    </div>
+                     <div class="bg-dark-950 rounded-lg border border-dark-800 p-4 hover:border-brand-500/50 transition-colors cursor-pointer" onclick="this.querySelector('p').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
+                        <div class="flex justify-between items-center"><h4 class="font-bold text-white text-sm md:text-base">Funciona no celular?</h4><i data-lucide="chevron-down" class="text-dark-400 transition-transform duration-300"></i></div>
+                        <p class="text-dark-400 mt-2 text-sm hidden">Sim! Todos os nossos sites são "Mobile First", ou seja, desenhados para funcionar perfeitamente em celulares, que é onde a maioria das pessoas acessa hoje em dia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-16 md:py-24 bg-dark-950/30 relative border-t border-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12 reveal">
+                <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Investimento</span>
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Planos Transparentes</h2>
+                <p class="text-lg text-dark-400 mb-8">Escolha o plano ideal para o momento do seu negócio.</p>
+                
+                <!-- Toggle Switch -->
+                <div class="flex items-center justify-center gap-4 mb-8 bg-dark-900 p-2 rounded-full shadow-sm inline-flex border border-dark-700">
+                    <span id="monthly-label" class="text-sm font-bold text-white px-3 cursor-pointer select-none" onclick="if(isAnnual) togglePricing()">Mensal</span>
+                    <button onclick="togglePricing()" class="w-14 h-7 bg-brand-600 rounded-full p-1 transition-colors relative focus:outline-none">
+                        <div id="toggle-circle" class="w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-0"></div>
+                    </button>
+                    <span id="yearly-label" class="text-sm font-medium text-dark-400 px-3 cursor-pointer flex items-center gap-2 select-none" onclick="if(!isAnnual) togglePricing()">
+                        Anual <span class="text-xs font-bold text-emerald-300 bg-emerald-900/50 border border-emerald-800 px-2 py-0.5 rounded-full">-20%</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-center">
+                <!-- Plan 1: Básico -->
+                <div class="reveal magic-card bg-dark-900 rounded-2xl p-8 border border-dark-700 hover:border-brand-500/30 shadow-lg transition-all duration-300 flex flex-col h-full group">
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="mb-4">
+                            <h3 class="font-display text-xl font-bold text-white">Básico</h3>
+                            <p class="text-dark-400 text-sm mt-1">Para começar a vender online.</p>
+                        </div>
+                        <div class="mb-6 pb-6 border-b border-dark-700">
+                            <div class="flex items-end gap-1">
+                                <span class="text-4xl font-extrabold text-white price-display" data-monthly="59" data-yearly="590">R$ 59</span>
+                                <span class="text-dark-400 text-sm mb-1 period-display font-medium">/mês</span>
+                            </div>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-sm flex-1">
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Catálogo Digital</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Design Responsivo</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Pedidos no WhatsApp</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Hospedagem Grátis</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Suporte E-mail</li>
+                        </ul>
+                        <button onclick="selectPlan('Básico')" class="w-full py-3 rounded-xl font-bold bg-dark-800 text-white border border-dark-700 hover:bg-dark-700 hover:border-dark-600 transition-all flex items-center justify-center gap-2">
+                            Começar Básico <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan 2: Profissional -->
+                <div class="reveal magic-card bg-dark-900 rounded-2xl p-8 border-2 border-brand-600 shadow-2xl shadow-brand-900/30 scale-105 z-10 relative flex flex-col h-full transform md:scale-105 md:-translate-y-2">
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-full text-center">
+                            <span class="bg-gradient-to-r from-brand-600 to-indigo-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg shadow-black/30">Mais Popular</span>
+                        </div>
+                        <div class="mb-4">
+                            <h3 class="font-display text-2xl font-bold text-white">Profissional</h3>
+                            <p class="text-brand-100 text-sm mt-1">O favorito dos clientes.</p>
+                        </div>
+                        <div class="mb-6 pb-6 border-b border-dark-700">
+                            <div class="flex items-end gap-1">
+                                <span class="text-5xl font-extrabold text-white price-display" data-monthly="99" data-yearly="990">R$ 99</span>
+                                <span class="text-dark-400 text-sm mb-1 period-display font-medium">/mês</span>
+                            </div>
+                        </div>
+                        <ul class="space-y-4 mb-8 text-sm font-medium flex-1">
+                            <li class="flex items-center gap-3 text-white"><div class="p-1 bg-brand-900 rounded-full text-brand-400"><i data-lucide="check" class="w-3 h-3"></i></div> Painel Administrativo</li>
+                            <li class="flex items-center gap-3 text-white"><div class="p-1 bg-brand-900 rounded-full text-brand-400"><i data-lucide="check" class="w-3 h-3"></i></div> Controle de Estoque</li>
+                            <li class="flex items-center gap-3 text-white"><div class="p-1 bg-brand-900 rounded-full text-brand-400"><i data-lucide="check" class="w-3 h-3"></i></div> Integração Planilhas</li>
+                            <li class="flex items-center gap-3 text-white"><div class="p-1 bg-brand-900 rounded-full text-brand-400"><i data-lucide="check" class="w-3 h-3"></i></div> PWA (App Instalável)</li>
+                            <li class="flex items-center gap-3 text-white"><div class="p-1 bg-brand-900 rounded-full text-brand-400"><i data-lucide="check" class="w-3 h-3"></i></div> Suporte Prioritário</li>
+                        </ul>
+                        <button onclick="selectPlan('Profissional')" class="w-full py-3.5 rounded-xl font-bold bg-brand-600 text-white hover:bg-brand-500 shadow-lg shadow-brand-900/50 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                            Assinar Profissional <i data-lucide="star" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan 3: Premium -->
+                <div class="reveal magic-card bg-dark-900 rounded-2xl p-8 border border-dark-700 hover:border-brand-500/30 shadow-lg transition-all duration-300 flex flex-col h-full">
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="mb-4">
+                            <h3 class="font-display text-xl font-bold text-white">Premium</h3>
+                            <p class="text-dark-400 text-sm mt-1">Para escalar resultados.</p>
+                        </div>
+                        <div class="mb-6 pb-6 border-b border-dark-700">
+                            <div class="flex items-end gap-1">
+                                <span class="text-4xl font-extrabold text-white price-display" data-monthly="149" data-yearly="1490">R$ 149</span>
+                                <span class="text-dark-400 text-sm mb-1 period-display font-medium">/mês</span>
+                            </div>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-sm flex-1">
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Domínio .com </li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Relatórios Mensais</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Integração Planilhas</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Personalização Total</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> PWA (App Instalável)</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Controle de Estoque</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Painel Administrativo</li>
+                            <li class="flex items-center gap-3 text-dark-200"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Suporte Prioritário</li>
+                        </ul>
+                        <button onclick="selectPlan('Premium')" class="w-full py-3 rounded-xl font-bold bg-dark-800 text-white border border-dark-700 hover:bg-dark-700 hover:border-dark-600 transition-all flex items-center justify-center gap-2">
+                            Começar Premium <i data-lucide="rocket" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 md:py-24 bg-dark-950/30 relative border-t border-dark-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-start">
+                <div class="reveal">
+                    <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-2 block">Contato</span>
+                    <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">Vamos decolar seu projeto?</h2>
+                    <p class="text-lg text-dark-400 mb-8">
+                        Preencha o formulário e nossa equipe entrará em contato em até 24 horas para uma consultoria gratuita.
+                    </p>
+                    
+                    <div class="bg-dark-950 rounded-2xl p-6 border border-dark-800 mb-8">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="w-10 h-10 bg-dark-800 rounded-lg flex items-center justify-center text-brand-400 shadow-sm shrink-0 border border-dark-700"><i data-lucide="mail"></i></div>
+                            <div class="break-all"><h4 class="font-bold text-white">E-mail</h4><a href="mailto:miguelpessoal22@gmail.com" class="text-dark-400 hover:text-brand-400 transition-colors">miguelpessoal22@gmail.com</a></div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-dark-800 rounded-lg flex items-center justify-center text-brand-400 shadow-sm shrink-0 border border-dark-700"><i data-lucide="message-circle"></i></div>
+                            <div><h4 class="font-bold text-white">WhatsApp</h4><a href="https://wa.me/5579988225837" target="_blank" class="text-dark-400 hover:text-brand-400 transition-colors font-medium">(79) 98822-5837</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal bg-dark-950 p-6 md:p-8 rounded-3xl shadow-xl shadow-black/30 border border-dark-800">
+                    <form onsubmit="handleFormSubmit(event)" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-dark-200 mb-2">Nome</label>
+                                <input type="text" required class="w-full px-4 py-3 rounded-xl bg-dark-900 border border-dark-700 focus:bg-dark-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder-dark-700 text-white" placeholder="Seu nome">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-dark-200 mb-2">Empresa</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-xl bg-dark-900 border border-dark-700 focus:bg-dark-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder-dark-700 text-white" placeholder="Nome da empresa">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-dark-200 mb-2">E-mail</label>
+                            <input type="email" required class="w-full px-4 py-3 rounded-xl bg-dark-900 border border-dark-700 focus:bg-dark-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder-dark-700 text-white" placeholder="seu@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-dark-200 mb-2">Interesse</label>
+                            <div class="relative">
+                                <select class="w-full px-4 py-3 rounded-xl bg-dark-900 border border-dark-700 focus:bg-dark-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all appearance-none cursor-pointer text-white">
+                                    <option>Criação de Site Institucional</option>
+                                    <option>Loja Virtual / E-commerce</option>
+                                    <option>Landing Page</option>
+                                    <option>Sistema Personalizado</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-dark-200 mb-2">Mensagem</label>
+                            <textarea rows="4" class="w-full px-4 py-3 rounded-xl bg-dark-900 border border-dark-700 focus:bg-dark-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder-dark-700 resize-none text-white" placeholder="Conte mais sobre seu projeto..."></textarea>
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full py-4 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-500 shadow-lg shadow-brand-900/50 transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                            Enviar Solicitação <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-950 border-t border-dark-800 pt-12 md:pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center mb-6">
+                         <span class="font-display font-bold text-2xl text-white">Ferreira <span class="text-brand-500">Web</span></span>
+                    </div>
+                    <p class="text-dark-400 max-w-sm text-sm leading-relaxed">
+                        Transformamos ideias complexas em experiências digitais simples, bonitas e funcionais. Sua parceira ideal em tecnologia.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6">Navegação</h4>
+                    <ul class="space-y-3 text-sm text-dark-400">
+                        <li><a href="#hero" class="hover:text-brand-400 transition-colors">Início</a></li>
+                        <li><a href="#features" class="hover:text-brand-400 transition-colors">Vantagens</a></li>
+                        <li><a href="#portfolio" class="hover:text-brand-400 transition-colors">Portfólio</a></li>
+                        <li><a href="#pricing" class="hover:text-brand-400 transition-colors">Planos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6">Redes Sociais</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/ferreiraszwebdesign?igsh=MXB4Y25renc3ZDljMg%3D%3D&utm_source=qr" target="_blank" class="w-10 h-10 rounded-full bg-dark-900 flex items-center justify-center text-dark-400 hover:bg-dark-800 hover:text-brand-400 transition-colors border border-dark-800"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-900 flex items-center justify-center text-dark-400 hover:bg-dark-800 hover:text-brand-400 transition-colors border border-dark-800"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-dark-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-dark-400">
+                <p class="mb-4 md:mb-0">© 2024 Ferreira Web Design. Todos os direitos reservados.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-white">Termos</a>
+                    <a href="#" class="hover:text-white">Privacidade</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts do Site -->
+    <script>
+        // Inicializa ícones
+        lucide.createIcons();
+
+        // Reveal Animation on Scroll
+        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Logic for resize navbar on scroll
+        let lastScrollY = window.scrollY;
+        const nav = document.getElementById('navbar');
+        const navContainer = document.getElementById('navbar-container');
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            // Apenas redimensiona em telas maiores que mobile para evitar saltos visuais
+            if (window.innerWidth > 768) {
+                if (currentScrollY > 50) {
+                    if (currentScrollY > lastScrollY) {
+                        navContainer.classList.remove('h-20');
+                        navContainer.classList.add('h-14');
+                    } else {
+                        navContainer.classList.remove('h-14');
+                        navContainer.classList.add('h-20');
+                    }
+                } else {
+                    navContainer.classList.remove('h-14');
+                    navContainer.classList.add('h-20');
+                }
+            }
+            lastScrollY = currentScrollY;
+        });
+
+        // Mobile Menu
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // Scroll
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // Preços e WhatsApp
+        let isAnnual = false;
+        const myPhoneNumber = "5579988225837"; 
+
+        function togglePricing() {
+            isAnnual = !isAnnual;
+            const circle = document.getElementById('toggle-circle');
+            const prices = document.querySelectorAll('.price-display');
+            const periods = document.querySelectorAll('.period-display');
+            const mLabel = document.getElementById('monthly-label');
+            const yLabel = document.getElementById('yearly-label');
+
+            if (isAnnual) {
+                circle.classList.remove('translate-x-0');
+                circle.classList.add('translate-x-7');
+                mLabel.classList.remove('font-bold', 'text-white');
+                mLabel.classList.add('font-medium', 'text-dark-400');
+                yLabel.classList.remove('font-medium', 'text-dark-400');
+                yLabel.classList.add('font-bold', 'text-white');
+                
+                prices.forEach(price => price.innerText = 'R$ ' + price.dataset.yearly);
+                periods.forEach(p => p.innerText = '/ano');
+            } else {
+                circle.classList.add('translate-x-0');
+                circle.classList.remove('translate-x-7');
+                mLabel.classList.add('font-bold', 'text-white');
+                mLabel.classList.remove('font-medium', 'text-dark-400');
+                yLabel.classList.add('font-medium', 'text-dark-400');
+                yLabel.classList.remove('font-bold', 'text-white');
+
+                prices.forEach(price => price.innerText = 'R$ ' + price.dataset.monthly);
+                periods.forEach(p => p.innerText = '/mês');
+            }
+        }
+
+        function openWhatsApp() { window.open(`https://wa.me/${myPhoneNumber}`, '_blank'); }
+
+        function selectPlan(planName) {
+            const period = isAnnual ? "Anual" : "Mensal";
+            const message = encodeURIComponent(`Olá! Tenho interesse no plano *${planName}* (${period}). Gostaria de mais detalhes.`);
+            window.open(`https://wa.me/${myPhoneNumber}?text=${message}`, '_blank');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = 'Enviando...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            setTimeout(() => {
+                btn.innerHTML = 'Enviado com Sucesso! <i data-lucide="check" class="w-4 h-4"></i>';
+                lucide.createIcons(); 
+                btn.classList.remove('bg-brand-600', 'hover:bg-brand-500');
+                btn.classList.add('bg-emerald-500');
+                e.target.reset();
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    lucide.createIcons(); 
+                    btn.classList.remove('bg-emerald-500', 'opacity-75', 'cursor-not-allowed');
+                    btn.classList.add('bg-brand-600', 'hover:bg-brand-500');
+                }, 3000);
+            }, 1500);
+        }
+
+        // Magic Bento Card Effects (Só ativa em dispositivos que suportam hover)
+        if (window.matchMedia('(hover: hover)').matches) {
+            document.querySelectorAll('.magic-card').forEach(card => {
+                const particleIntervals = [];
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+                    card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+                    const rotateX = ((y - centerY) / centerY) * -3; 
+                    const rotateY = ((x - centerX) / centerX) * 3;
+                    gsap.to(card, { rotateX: rotateX, rotateY: rotateY, duration: 0.4, ease: 'power2.out', transformPerspective: 1000 });
+                });
+                card.addEventListener('mouseenter', () => {
+                    const interval = setInterval(() => { createParticle(card); }, 200); 
+                    card.dataset.particleInterval = interval;
+                });
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.6, ease: 'power2.out' });
+                    if (card.dataset.particleInterval) { clearInterval(card.dataset.particleInterval); delete card.dataset.particleInterval; }
+                });
+            });
+        }
+
+        function createParticle(card) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            const rect = card.getBoundingClientRect();
+            const startX = Math.random() * rect.width;
+            const startY = Math.random() * rect.height;
+            const size = Math.random() * 4 + 2; 
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${startX}px`;
+            particle.style.top = `${startY}px`;
+            particle.style.opacity = '0';
+            card.appendChild(particle);
+            gsap.timeline({ onComplete: () => particle.remove() })
+            .to(particle, { opacity: 1, duration: 0.2, ease: "power2.out" })
+            .to(particle, { x: (Math.random() - 0.5) * 100, y: (Math.random() - 0.5) * 100, opacity: 0, duration: 1.5 + Math.random(), ease: "power1.inOut" });
+        }
+    </script>
+
+    <!-- Script do Efeito Dark Veil -->
+    <script type="module">
+        import { Renderer, Program, Mesh, Triangle, Vec2 } from 'https://unpkg.com/ogl';
+
+        const vertex = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragment = `
+            #ifdef GL_ES
+            precision highp float;
+            #endif
+            uniform vec2 uResolution;
+            uniform float uTime;
+            uniform float uHueShift;
+            uniform float uNoise;
+            uniform float uScan;
+            uniform float uScanFreq;
+            uniform float uWarp;
+
+            vec4 buf[8];
+            float rand(vec2 c){return fract(sin(dot(c,vec2(12.9898,78.233)))*43758.5453);}
+
+            mat3 rgb2yiq=mat3(0.299,0.587,0.114,0.596,-0.274,-0.322,0.211,-0.523,0.312);
+            mat3 yiq2rgb=mat3(1.0,0.956,0.621,1.0,-0.272,-0.647,1.0,-1.106,1.703);
+
+            vec3 hueShiftRGB(vec3 col,float deg){
+                vec3 yiq=rgb2yiq*col;
+                float rad=radians(deg);
+                float cosh=cos(rad),sinh=sin(rad);
+                vec3 yiqShift=vec3(yiq.x,yiq.y*cosh-yiq.z*sinh,yiq.y*sinh+yiq.z*cosh);
+                return clamp(yiq2rgb*yiqShift,0.0,1.0);
+            }
+
+            vec4 sigmoid(vec4 x){return 1./(1.+exp(-x));}
+
+            vec4 cppn_fn(vec2 coordinate,float in0,float in1,float in2){
+                buf[6]=vec4(coordinate.x,coordinate.y,0.3948333106474662+in0,0.36+in1);
+                buf[7]=vec4(0.14+in2,sqrt(coordinate.x*coordinate.x+coordinate.y*coordinate.y),0.,0.);
+                buf[0]=mat4(vec4(6.5404263,-3.6126034,0.7590882,-1.13613),vec4(2.4582713,3.1660357,1.2219609,0.06276096),vec4(-5.478085,-6.159632,1.8701609,-4.7742867),vec4(6.039214,-5.542865,-0.90925294,3.251348))*buf[6]+mat4(vec4(0.8473259,-5.722911,3.975766,1.6522468),vec4(-0.24321538,0.5839259,-1.7661959,-5.350116),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(0.21808943,1.1243913,-1.7969975,5.0294676);
+                buf[1]=mat4(vec4(-3.3522482,-6.0612736,0.55641043,-4.4719114),vec4(0.8631464,1.7432913,5.643898,1.6106541),vec4(2.4941394,-3.5012043,1.7184316,6.357333),vec4(3.310376,8.209261,1.1355612,-1.165539))*buf[6]+mat4(vec4(5.24046,-13.034365,0.009859298,15.870829),vec4(2.987511,3.129433,-0.89023495,-1.6822904),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-5.9457836,-6.573602,-0.8812491,1.5436668);
+                buf[0]=sigmoid(buf[0]);buf[1]=sigmoid(buf[1]);
+                buf[2]=mat4(vec4(-15.219568,8.095543,-2.429353,-1.9381982),vec4(-5.951362,4.3115187,2.6393783,1.274315),vec4(-7.3145227,6.7297835,5.2473326,5.9411426),vec4(5.0796127,8.979051,-1.7278991,-1.158976))*buf[6]+mat4(vec4(-11.967154,-11.608155,6.1486754,11.237008),vec4(2.124141,-6.263192,-1.7050359,-0.7021966),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-4.17164,-3.2281182,-4.576417,-3.6401186);
+                buf[3]=mat4(vec4(3.1832156,-13.738922,1.879223,3.233465),vec4(0.64300746,12.768129,1.9141049,0.50990224),vec4(-0.049295485,4.4807224,1.4733979,1.801449),vec4(5.0039253,13.000481,3.3991797,-4.5561905))*buf[6]+mat4(vec4(-0.1285731,7.720628,-3.1425676,4.742367),vec4(0.6393625,3.714393,-0.8108378,-0.39174938),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-1.1811101,-21.621881,0.7851888,1.2329718);
+                buf[2]=sigmoid(buf[2]);buf[3]=sigmoid(buf[3]);
+                buf[4]=mat4(vec4(5.214916,-7.183024,2.7228765,2.6592617),vec4(-5.601878,-25.3591,4.067988,0.4602802),vec4(-10.57759,24.286327,21.102104,37.546658),vec4(4.3024497,-1.9625226,2.3458803,-1.372816))*buf[0]+mat4(vec4(-17.6526,-10.507558,2.2587414,12.462782),vec4(6.265566,-502.75443,-12.642513,0.9112289),vec4(-10.983244,20.741234,-9.701768,-0.7635988),vec4(5.383626,1.4819539,-4.1911616,-4.8444734))*buf[1]+mat4(vec4(12.785233,-16.345072,-0.39901125,1.7955981),vec4(-30.48365,-1.8345358,1.4542528,-1.1118771),vec4(19.872723,-7.337935,-42.941723,-98.52709),vec4(8.337645,-2.7312303,-2.2927687,-36.142323))*buf[2]+mat4(vec4(-16.298317,3.5471997,-0.44300047,-9.444417),vec4(57.5077,-35.609753,16.163465,-4.1534753),vec4(-0.07470326,-3.8656476,-7.0901804,3.1523974),vec4(-12.559385,-7.077619,1.490437,-0.8211543))*buf[3]+vec4(-7.67914,15.927437,1.3207729,-1.6686112);
+                buf[5]=mat4(vec4(-1.4109162,-0.372762,-3.770383,-21.367174),vec4(-6.2103205,-9.35908,0.92529047,8.82561),vec4(11.460242,-22.348068,13.625772,-18.693201),vec4(-0.3429052,-3.9905605,-2.4626114,-0.45033523))*buf[0]+mat4(vec4(7.3481627,-4.3661838,-6.3037653,-3.868115),vec4(1.5462853,6.5488915,1.9701879,-0.58291394),vec4(6.5858274,-2.2180402,3.7127688,-1.3730392),vec4(-5.7973905,10.134961,-2.3395722,-5.965605))*buf[1]+mat4(vec4(-2.5132585,-6.6685553,-1.4029363,-0.16285264),vec4(-0.37908727,0.53738135,4.389061,-1.3024765),vec4(-0.70647055,2.0111287,-5.1659346,-3.728635),vec4(-13.562562,10.487719,-0.9173751,-2.6487076))*buf[2]+mat4(vec4(-8.645013,6.5546675,-6.3944063,-5.5933375),vec4(-0.57783127,-1.077275,36.91025,5.736769),vec4(14.283112,3.7146652,7.1452246,-4.5958776),vec4(2.7192075,3.6021907,-4.366337,-2.3653464))*buf[3]+vec4(-5.9000807,-4.329569,1.2427121,8.59503);
+                buf[4]=sigmoid(buf[4]);buf[5]=sigmoid(buf[5]);
+                buf[6]=mat4(vec4(-1.61102,0.7970257,1.4675229,0.20917463),vec4(-28.793737,-7.1390953,1.5025433,4.656581),vec4(-10.94861,39.66238,0.74318546,-10.095605),vec4(-0.7229728,-1.5483948,0.7301322,2.1687684))*buf[0]+mat4(vec4(3.2547753,21.489103,-1.0194173,-3.3100595),vec4(-3.7316632,-3.3792162,-7.223193,-0.23685838),vec4(13.1804495,0.7916005,5.338587,5.687114),vec4(-4.167605,-17.798311,-6.815736,-1.6451967))*buf[1]+mat4(vec4(0.604885,-7.800309,-7.213122,-2.741014),vec4(-3.522382,-0.12359311,-0.5258442,0.43852118),vec4(9.6752825,-22.853785,2.062431,0.099892326),vec4(-4.3196306,-17.730087,2.5184598,5.30267))*buf[2]+mat4(vec4(-6.545563,-15.790176,-6.0438633,-5.415399),vec4(-43.591583,28.551912,-16.00161,18.84728),vec4(4.212382,8.394307,3.0958717,8.657522),vec4(-5.0237565,-4.450633,-4.4768,-5.5010443))*buf[3]+mat4(vec4(1.6985557,-67.05806,6.897715,1.9004834),vec4(1.8680354,2.3915145,2.5231109,4.081538),vec4(11.158006,1.7294737,2.0738268,7.386411),vec4(-4.256034,-306.24686,8.258898,-17.132736))*buf[4]+mat4(vec4(1.6889864,-4.5852966,3.8534803,-6.3482175),vec4(1.3543309,-1.2640043,9.932754,2.9079645),vec4(-5.2770967,0.07150358,-0.13962056,3.3269649),vec4(28.34703,-4.918278,6.1044083,4.085355))*buf[5]+vec4(6.6818056,12.522166,-3.7075126,-4.104386);
+                buf[7]=mat4(vec4(-8.265602,-4.7027016,5.098234,0.7590888),vec4(8.6507845,-17.15949,16.51939,-8.884479),vec4(-4.036479,-2.3946867,-2.6055532,-1.9866527),vec4(-2.2167742,-1.8135649,-5.9759874,4.8846445))*buf[0]+mat4(vec4(6.7790847,3.5076547,-2.8191125,-2.7028968),vec4(-5.743024,-0.27844876,1.4958696,-5.0517144),vec4(13.122226,15.735168,-2.9397483,-4.101023),vec4(-14.375265,-5.030483,-6.2599335,2.9848232))*buf[1]+mat4(vec4(4.0950394,-0.94011575,-5.674733,4.755022),vec4(4.3809423,4.8310084,1.7425908,-3.437416),vec4(2.117492,0.16342592,-104.56341,16.949184),vec4(-5.22543,-2.994248,3.8350096,-1.9364246))*buf[2]+mat4(vec4(-5.900337,1.7946124,-13.604192,-3.8060522),vec4(6.6583457,31.911177,25.164474,91.81147),vec4(11.840538,4.1503043,-0.7314397,6.768467),vec4(-6.3967767,4.034772,6.1714606,-0.32874924))*buf[3]+mat4(vec4(3.4992442,-196.91893,-8.923708,2.8142626),vec4(3.4806502,-3.1846354,5.1725626,5.1804223),vec4(-2.4009497,15.585794,1.2863957,2.0252278),vec4(-71.25271,-62.441242,-8.138444,0.50670296))*buf[4]+mat4(vec4(-12.291733,-11.176166,-7.3474145,4.390294),vec4(10.805477,5.6337385,-0.9385842,-4.7348723),vec4(-12.869276,-7.039391,5.3029537,7.5436664),vec4(1.4593618,8.91898,3.5101583,5.840625))*buf[5]+vec4(2.2415268,-6.705987,-0.98861027,-2.117676);
+                buf[6]=sigmoid(buf[6]);buf[7]=sigmoid(buf[7]);
+                buf[0]=mat4(vec4(1.6794263,1.3817469,2.9625452,0.),vec4(-1.8834411,-1.4806935,-3.5924516,0.),vec4(-1.3279216,-1.0918057,-2.3124623,0.),vec4(0.2662234,0.23235129,0.44178495,0.))*buf[0]+mat4(vec4(-0.6299101,-0.5945583,-0.9125601,0.),vec4(0.17828953,0.18300213,0.18182953,0.),vec4(-2.96544,-2.5819945,-4.9001055,0.),vec4(1.4195864,1.1868085,2.5176322,0.))*buf[1]+mat4(vec4(-1.2584374,-1.0552157,-2.1688404,0.),vec4(-0.7200217,-0.52666044,-1.438251,0.),vec4(0.15345335,0.15196142,0.272854,0.),vec4(0.945728,0.8861938,1.2766753,0.))*buf[2]+mat4(vec4(-2.4218085,-1.968602,-4.35166,0.),vec4(-22.683098,-18.0544,-41.954372,0.),vec4(0.63792,0.5470648,1.1078634,0.),vec4(-1.5489894,-1.3075932,-2.6444845,0.))*buf[3]+mat4(vec4(-0.49252132,-0.39877754,-0.91366625,0.),vec4(0.95609266,0.7923952,1.640221,0.),vec4(0.30616966,0.15693925,0.8639857,0.),vec4(1.1825981,0.94504964,2.176963,0.))*buf[4]+mat4(vec4(0.35446745,0.3293795,0.59547555,0.),vec4(-0.58784515,-0.48177817,-1.0614829,0.),vec4(2.5271258,1.9991658,4.6846647,0.),vec4(0.13042648,0.08864098,0.30187556,0.))*buf[5]+mat4(vec4(-1.7718065,-1.4033192,-3.3355875,0.),vec4(3.1664357,2.638297,5.378702,0.),vec4(-3.1724713,-2.6107926,-5.549295,0.),vec4(-2.851368,-2.249092,-5.3013067,0.))*buf[6]+mat4(vec4(1.5203838,1.2212278,2.8404984,0.),vec4(1.5210563,1.2651345,2.683903,0.),vec4(2.9789467,2.4364579,5.2347264,0.),vec4(2.2270417,1.8825914,3.8028636,0.))*buf[7]+vec4(-1.5468478,-3.6171484,0.24762098,0.);
+                buf[0]=sigmoid(buf[0]);
+                return vec4(buf[0].x,buf[0].y,buf[0].z,1.);
+            }
+
+            void mainImage(out vec4 fragColor,in vec2 fragCoord){
+                vec2 uv=fragCoord/uResolution.xy*2.-1.;
+                uv.y*=-1.;
+                uv+=uWarp*vec2(sin(uv.y*6.283+uTime*0.5),cos(uv.x*6.283+uTime*0.5))*0.05;
+                fragColor=cppn_fn(uv,0.1*sin(0.3*uTime),0.1*sin(0.69*uTime),0.1*sin(0.44*uTime));
+            }
+
+            void main(){
+                vec4 col;mainImage(col,gl_FragCoord.xy);
+                col.rgb=hueShiftRGB(col.rgb,uHueShift);
+                float scanline_val=sin(gl_FragCoord.y*uScanFreq)*0.5+0.5;
+                col.rgb*=1.-(scanline_val*scanline_val)*uScan;
+                col.rgb+=(rand(gl_FragCoord.xy+uTime)-0.5)*uNoise;
+                gl_FragColor=vec4(clamp(col.rgb,0.0,1.0),1.0);
+            }
+        `;
+
+        const canvas = document.getElementById('darkveil-canvas');
+        const renderer = new Renderer({
+            dpr: Math.min(window.devicePixelRatio, 2),
+            canvas: canvas,
+            alpha: true
+        });
+
+        const gl = renderer.gl;
+        const geometry = new Triangle(gl);
+
+        const program = new Program(gl, {
+            vertex,
+            fragment,
+            uniforms: {
+                uTime: { value: 0 },
+                uResolution: { value: new Vec2() },
+                uHueShift: { value: 0 }, // Ajuste a cor base aqui
+                uNoise: { value: 0.05 }, // Intensidade do ruído
+                uScan: { value: 0 }, // Linhas de scan
+                uScanFreq: { value: 0 },
+                uWarp: { value: 0 }
+            }
+        });
+
+        const mesh = new Mesh(gl, { geometry, program });
+
+        function resize() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            renderer.setSize(w, h);
+            program.uniforms.uResolution.value.set(w, h);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        let start = performance.now();
+        
+        function loop() {
+            program.uniforms.uTime.value = ((performance.now() - start) / 1000) * 0.5; // Velocidade da animação
+            renderer.render({ scene: mesh });
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+</html>
